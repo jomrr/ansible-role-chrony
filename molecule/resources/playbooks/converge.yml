@@ -1,0 +1,12 @@
+---
+# role: ansible-role-chrony
+# file: molecule/resources/playbooks/converge.yml
+
+- name: Converge
+  hosts: all
+  become: True
+  pre_tasks:
+    - name: "Include variables to converge playbook"
+      include_vars: vars.yml
+  roles:
+    - role: ansible-role-chrony

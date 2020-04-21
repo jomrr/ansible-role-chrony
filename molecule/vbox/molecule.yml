@@ -1,0 +1,65 @@
+---
+# role: ansible-role-chrony
+# file: molecule/vbox/molecule.yml
+
+dependency:
+  name: galaxy
+  options:
+    role-file: molecule/resources/roles/requirements.yml
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+    type: virtualbox
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+platforms:
+  - name: chrony-alpine310
+    box: "generic/alpine310"
+    cpus: 2
+    memory: 1024
+  - name: chrony-arch
+    box: "archlinux/archlinux"
+    cpus: 2
+    memory: 1024
+  - name: chrony-centos8
+    box: "centos/8"
+    cpus: 2
+    memory: 1024
+  - name: chrony-debian10
+    box: "debian/buster64"
+    cpus: 2
+    memory: 1024
+  - name: chrony-fedora31
+    box: "fedora/31-cloud-base"
+    cpus: 2
+    memory: 1024
+  - name: chrony-ubuntu1804
+    box: "ubuntu/bionic64"
+    cpus: 2
+    memory: 1024
+  - name: chrony-ubuntu2004
+    box: "ubuntu/focal64"
+    cpus: 2
+    memory: 1024
+provisioner:
+  name: ansible
+  log: True
+  playbooks:
+    prepare: ../resources/playbooks/prepare.yml
+    converge: ../resources/playbooks/converge.yml
+  inventory:
+    group_vars:
+      all:
+        chrony_role_enabled: True
+verifier:
+  name: testinfra
+  env:
+    PYTHONWARNINGS: "ignore"
+  directory: ../resources/tests
+  options:
+    v: True
+    sudo: True

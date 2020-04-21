@@ -1,0 +1,52 @@
+# {{ template_destpath }}
+# vi: ft=conf
+# {{ ansible_managed }}
+
+# general settings
+{% if chrony_port is defined %}
+port {{ chrony_port }}
+{% endif %}
+{% if chrony_cmdport is defined %}
+cmdport {{ chrony_cmdport }}
+{% endif %}
+{% if chrony_bindcmdaddress is defined %}
+bindcmdaddress {{ chrony_bindcmdaddress }}
+{% endif %}
+{% if chrony_driftfile is defined %}
+driftfile {{ chrony_driftfile }}
+{% endif %}
+{% if chrony_dumponexit | bool %}
+dumponexit
+{% endif %}
+{% if chrony_dumpdir is defined %}
+dumpdir {{ chrony_dumpdir }}
+{% endif %}
+{% for hw_interface in chrony_hwtimestamp_interfaces | d([]) %}
+hwtimestamp {{ hw_interface }}
+{% endfor %}
+{% if chrony_leapsectz is defined %}
+leapsectz {{ chrony_leapsectz }}
+{% endif %}
+{% if chrony_makestep_secs is defined and chrony_makestep_nums is defined %}
+makestep {{ chrony_makestep_secs }} {{ chrony_makestep_nums }}
+{% endif %}
+{% if chrony_rtconutc | bool | d(False) %}
+rtconutc
+{% endif %}
+{% if chrony_rtcsync | bool | d(False) %}
+rtcsync
+{% endif %}
+{% if chrony_ntp_pools is defined %}
+
+# list of ntp servers and options
+{% for ntp_pool in chrony_ntp_pools | d([]) %}
+pool {{ ntp_pool.address }} {{ ntp_pool.options | join(' ') }}
+{% endfor %}
+{% endif %}
+{% if chrony_ntp_servers is defined %}
+
+# list of ntp servers and options
+{% for ntp_server in chrony_ntp_servers | d([]) %}
+server {{ ntp_server.address }} {{ ntp_server.options | join(' ') }}
+{% endfor %}
+{% endif %}

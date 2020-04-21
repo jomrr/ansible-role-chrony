@@ -1,0 +1,8 @@
+---
+# role: ansible-role-chrony
+# file: vars/main.yml
+
+chrony_daemon: 'chronyd'
+
+chrony_user: 'chrony'
+chrony_group: 'chrony'

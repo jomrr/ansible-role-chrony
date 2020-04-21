@@ -1,0 +1,6 @@
+---
+# role: ansible-role-chrony
+# file: molecule/resources/playbooks/vars.yml
+
+common_role_enabled: True
+chrony_role_enabled: True
