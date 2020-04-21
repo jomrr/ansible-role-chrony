@@ -1,5 +1,7 @@
 # ansible-role-chrony
 
+![GitHub](https://img.shields.io/github/license/jam82/ansible-role-chrony) [![Build Status](https://travis-ci.org/jam82/ansible-role-chrony.svg?branch=master)](https://travis-ci.org/jam82/ansible-role-chrony)
+
 **Ansible role for setting up chrony.**
 
 Currently only client mode is supported, as I do not need an own ntp server.

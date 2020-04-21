@@ -26,9 +26,3 @@
     group: root
     mode: 0644
   notify: enable and restart chronyd
-
-- name: enable and restart chronyd
-  service:
-    name: "{{ chrony_daemon }}"
-    enabled: yes
-    state: restarted
