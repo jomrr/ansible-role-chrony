@@ -5,7 +5,7 @@
 dependency:
   name: galaxy
   options:
-    role-file: molecule/resources/roles/requirements.yml
+    role-file: requirements.yml
 driver:
   name: vagrant
   provider:
@@ -15,51 +15,53 @@ lint: |
   set -e
   yamllint .
   ansible-lint
-  flake8
 platforms:
-  - name: chrony-alpine310
-    box: "generic/alpine310"
+  - name: alpine-chrony
+    box: "generic/alpine312"
     cpus: 2
     memory: 1024
-  - name: chrony-arch
+  - name: amazon-chrony
+    box: "bento/amazonlinux-2"
+    cpus: 2
+    memory: 1024
+  - name: arch-chrony
     box: "archlinux/archlinux"
     cpus: 2
     memory: 1024
-  - name: chrony-centos8
+  - name: centos-chrony
     box: "centos/8"
     cpus: 2
     memory: 1024
-  - name: chrony-debian10
-    box: "debian/buster64"
+  - name: debian-chrony
+    box: "debian/bullseye64"
     cpus: 2
     memory: 1024
-  - name: chrony-fedora31
-    box: "fedora/31-cloud-base"
+  - name: fedora-chrony
+    box: "fedora/33-cloud-base"
     cpus: 2
     memory: 1024
-  - name: chrony-ubuntu1804
-    box: "ubuntu/bionic64"
+  - name: opensuse-chrony
+    box: "generic/opensuse15"
     cpus: 2
     memory: 1024
-  - name: chrony-ubuntu2004
+  - name: oracle-chrony
+    box: "generic/oracle8"
+    cpus: 2
+    memory: 1024
+  - name: ubuntu-chrony
     box: "ubuntu/focal64"
     cpus: 2
     memory: 1024
 provisioner:
   name: ansible
-  log: True
+  log: true
   playbooks:
     prepare: ../resources/playbooks/prepare.yml
     converge: ../resources/playbooks/converge.yml
+    verify: ../resources/playbooks/verify.yml
   inventory:
     group_vars:
       all:
-        chrony_role_enabled: True
+        chrony_role_enabled: true
 verifier:
-  name: testinfra
-  env:
-    PYTHONWARNINGS: "ignore"
-  directory: ../resources/tests
-  options:
-    v: True
-    sudo: True
+  name: ansible

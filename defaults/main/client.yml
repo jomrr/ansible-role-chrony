@@ -4,7 +4,7 @@
 
 # The role is disabled by default, so you do not get in trouble.
 # Checked in tasks/main.yml which includes tasks.yml if enabled.
-chrony_role_enabled: False
+chrony_role_enabled: false
 
 # Port 0 completely disables the ntp server functionality
 chrony_port: 0
@@ -22,7 +22,7 @@ chrony_driftfile: /var/lib/chrony/chrony.drift
 
 # This will reduce the time to catch up if chronyd is restarted,
 # as it saves its state to a directory.
-chrony_dumponexit: True
+chrony_dumponexit: true
 chrony_dumpdir: /var/lib/chrony
 
 # List of network interfaces for hardware timestamping
@@ -74,6 +74,6 @@ chrony_ntp_servers: []
 #      - xleave
 
 # RealTime Clock in UTC
-chrony_rtconutc: True
+chrony_rtconutc: true
 # Sync your RTC wit NTP
-chrony_rtcsync: True
+chrony_rtcsync: true
