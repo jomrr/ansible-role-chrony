@@ -2,20 +2,20 @@
 # role: ansible-role-chrony
 # file: tasks/clent.yml
 
-- name: "Disable conflicting services"
+- name: "Stop conflicting services"
   service:
     name: "{{ item }}"
-    enabled: no
+    enabled: false
     state: stopped
-  loop: "{{ chrony_disable_services }}"
+  loop: "{{ chrony_mask_services }}"
 
 - name: "Mask conflicting services in systemd"
   service:
     name: "{{ item }}"
-    enabled: no
-    masked: yes
+    enabled: false
+    masked: true
     state: stopped
-  loop: "{{ chrony_disable_services }}"
+  loop: "{{ chrony_mask_services }}"
   when: ansible_service_mgr == 'systemd'
 
 - name: "Write {{ chrony_conf }}"

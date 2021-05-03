@@ -5,5 +5,5 @@
 - name: enable and restart chronyd
   service:
     name: "{{ chrony_daemon }}"
-    enabled: yes
+    enabled: true
     state: restarted

@@ -5,7 +5,7 @@
 dependency:
   name: galaxy
   options:
-    role-file: molecule/resources/roles/requirements.yml
+    role-file: requirements.yml
 driver:
   name: vagrant
   provider:
@@ -20,31 +20,30 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: chrony-arch
+  - name: arch-chrony
     box: "archlinux/archlinux"
-  - name: chrony-centos8
+  - name: centos-chrony
     box: "centos/8"
-  - name: chrony-debian10
-    box: "debian/buster64"
-  - name: chrony-fedora31
-    box: "fedora/31-cloud-base"
-  - name: chrony-ubuntu1804
-    box: "generic/ubuntu1804"
+  - name: debian-chrony
+    box: "debian/bullseye64"
+  - name: fedora-chrony
+    box: "fedora/33-cloud-base"
+  - name: opensuse-chrony
+    box: "generic/opensuse15"
+  - name: oracle-chrony
+    box: "generic/oracle8"
+  - name: ubuntu-chrony
+    box: "generic/ubuntu2004"
 provisioner:
   name: ansible
-  log: True
+  log: true
   playbooks:
     prepare: ../resources/playbooks/prepare.yml
     converge: ../resources/playbooks/converge.yml
+    verify: ../resources/playbooks/verify.yml
   inventory:
     group_vars:
       all:
-        chrony_role_enabled: True
+        chrony_role_enabled: true
 verifier:
-  name: testinfra
-  env:
-    PYTHONWARNINGS: "ignore"
-  directory: ../resources/tests
-  options:
-    v: True
-    sudo: True
+  name: ansible

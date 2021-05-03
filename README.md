@@ -1,6 +1,6 @@
 # ansible-role-chrony
 
-![GitHub](https://img.shields.io/github/license/jam82/ansible-role-chrony) [![Build Status](https://travis-ci.org/jam82/ansible-role-chrony.svg?branch=master)](https://travis-ci.org/jam82/ansible-role-chrony)
+![GitHub](https://img.shields.io/github/license/jam82/ansible-role-chrony) [![Build Status](https://travis-ci.org/jam82/ansible-role-chrony.svg?branch=main)](https://travis-ci.org/jam82/ansible-role-chrony)
 
 **Ansible role for setting up chrony.**
 
@@ -8,24 +8,29 @@ Currently only client mode is supported, as I do not need an own ntp server.
 
 But server functionality will follow... :)
 
-> WARNING: This role uninstalls `ntp`.
+> ATTENTION: This role uninstalls `ntp` and masks `systemd-timesyncd`.
 
 ## Supported Platforms
 
-- Alpine 3.11
+- Alpine
+- AmazonLinux 2
 - Archlinux
-- CentOS 8
-- Debian 9, 10
-- Fedora 31
-- Ubuntu 18.04, 20.04
+- CentOS
+- Debian
+- Fedora
+- OpenSuse Leap, Tumbleweed
+- OracleLinux
+- Ubuntu
 
 ## Requirements
 
-Ansible 2.9 or higher is recommended.
+Ansible 2.9 or higher.
 
 ## Variables
 
 Variables and defaults for this role.
+
+### defaults/main/client.yml
 
 ### Cient defaults
 
@@ -36,7 +41,7 @@ Variables and defaults for this role.
 
 # The role is disabled by default, so you do not get in trouble.
 # Checked in tasks/main.yml which includes tasks.yml if enabled.
-chrony_role_enabled: False
+chrony_role_enabled: false
 
 # Port 0 completely disables the ntp server functionality
 chrony_port: 0
@@ -54,7 +59,7 @@ chrony_driftfile: /var/lib/chrony/chrony.drift
 
 # This will reduce the time to catch up if chronyd is restarted,
 # as it saves its state to a directory.
-chrony_dumponexit: True
+chrony_dumponexit: true
 chrony_dumpdir: /var/lib/chrony
 
 # List of network interfaces for hardware timestamping
@@ -66,7 +71,7 @@ chrony_hwtimestamp_interfaces: []
 
 # If the system timezone database is kept up to date and includes the
 # right/UTC timezone, chronyd can use it to determine the current
-# TAI-UTC offset and when will the next leap second occur.
+# TAI-UTC offset and when the next leap second will occur.
 chrony_leapsectz: right/UTC
 
 # Allow stepping. Useful for VMs that can be suspended.
@@ -95,7 +100,7 @@ chrony_ntp_pools:
 
 # List of NTP Servers with option list.
 chrony_ntp_servers: []
-# following options are only for LAN, a public ntp could block your
+# following options are only for LAN, a public ntp could block you
 # for sending too many requests.
 #  - address: 192.168.1.1
 #    options:
@@ -106,9 +111,9 @@ chrony_ntp_servers: []
 #      - xleave
 
 # RealTime Clock in UTC
-chrony_rtconutc: True
+chrony_rtconutc: true
 # Sync your RTC wit NTP
-chrony_rtcsync: True
+chrony_rtcsync: true
 ```
 
 ### Server defaults
@@ -129,9 +134,10 @@ This will configure a client to use the first four *.de.pool.ntp.org servers.
 # file: site.yml
 
 - hosts: chrony_systems
-  become: True
+  become: true
+  gather_facts: true
   vars:
-    chrony_role_enabled: True
+    chrony_role_enabled: true
   roles:
     - role: ansible-role-chrony
 ```

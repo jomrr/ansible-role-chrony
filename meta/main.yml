@@ -3,7 +3,7 @@
 # file: meta/main.yml
 
 galaxy_info:
-  role_name: ansible-role-chrony
+  role_name: chrony
   author: jam82
   description: Ansible role for setting up chrony.
   company: ''
@@ -14,50 +14,35 @@ galaxy_info:
 
   license: MIT
 
-  min_ansible_version: 2.8
-
-  # If this a Container Enabled role, provide the minimum Ansible Container version.
-  # min_ansible_container_version:
-
-  github_branch: master
+  min_ansible_version: "2.9"
 
   # platforms is a list of platforms, and each platform has a name and a list of versions.
-  #
   platforms:
     - name: Alpine
       versions:
-        - 3.10
-        - 3.11
-    - name: Amazon
+        - any
+    - name: Amazon Linux 2
       versions:
-        - 2
-    - name: Archlinux
-    - name: CentOS
+        - any
+    - name: ArchLinux
       versions:
-        - 7
-        - 8
+        - any
+    - name: EL
+      versions:
+        - any
     - name: Debian
       versions:
-        - 9
-        - 10
+        - any
     - name: Fedora
       versions:
-        - 31
-    - name: Oracle
+        - any
+    - name: opensuse
       versions:
-        - 7
-        - 8
-    - name: OpenSuse Leap
-      versions:
-        - 15
+        - any
     - name: Ubuntu
       versions:
-        - 18.04
-        - 20.04
+        - any
 
   galaxy_tags: []
 
-  dependencies:
-    - src: https://github.com/jam82/ansible-role-common.git
-      name: common
-      version: master
+dependencies: []
