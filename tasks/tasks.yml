@@ -1,6 +1,16 @@
 ---
 # role: ansible-role-chrony
-# file: tasks/clent.yml
+# file: tasks/tasks.yml
+
+- name: "Remove conflicting packages"
+  package:
+    name: "{{ chrony_remove_packages }}"
+    state: absent
+
+- name: "Install packages for ansible-role-chrony"
+  package:
+    name: "{{ chrony_packages }}"
+    state: present
 
 - name: "Stop conflicting services"
   service:

@@ -5,7 +5,7 @@
 dependency:
   name: galaxy
   options:
-    role-file: requirements.yml
+    requirements-file: requirements.yml
 driver:
   name: docker
 lint: |
@@ -13,114 +13,61 @@ lint: |
   yamllint .
   ansible-lint
 platforms:
+  - name: almalinux-chrony
+    image: "jam82/molecule-almalinux:latest"
+    command: ""
+    pre_build_image: true
+    privileged: true
   - name: alpine-chrony
     image: "jam82/molecule-alpine:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-  - name: amazon-chrony
-    image: "jam82/molecule-amazonlinux:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: arch-chrony
     image: "jam82/molecule-archlinux:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: centos-chrony
     image: "jam82/molecule-centos:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: debian-chrony
     image: "jam82/molecule-debian:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: fedora-chrony
     image: "jam82/molecule-fedora:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: opensuse-chrony
-    image: "jam82/molecule-opensuse:15"
+    image: "jam82/molecule-opensuse:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: tumbleweed-chrony
     image: "jam82/molecule-opensuse:tumbleweed"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - name: oracle-chrony
+  - name: oraclelinux-chrony
     image: "jam82/molecule-oraclelinux:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: ubuntu-chrony
     image: "jam82/molecule-ubuntu:latest"
     command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 provisioner:
   name: ansible
   log: true
   playbooks:
-    prepare: ../resources/playbooks/prepare.yml
     converge: ../resources/playbooks/converge.yml
     verify: ../resources/playbooks/verify.yml
-  inventory:
-    group_vars:
-      all:
-        chrony_role_enabled: true
 verifier:
   name: ansible

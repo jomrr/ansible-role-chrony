@@ -12,23 +12,32 @@ cmdport {{ chrony_cmdport }}
 {% if chrony_bindcmdaddress is defined %}
 bindcmdaddress {{ chrony_bindcmdaddress }}
 {% endif %}
-{% if chrony_driftfile is defined %}
+{% for directive in chrony_directives %}
+{{ directive }}
+{% endfor %}
+{% if chrony_driftfile is defined and chrony_driftfile | length > 0 %}
 driftfile {{ chrony_driftfile }}
 {% endif %}
 {% if chrony_dumponexit | bool %}
 dumponexit
 {% endif %}
-{% if chrony_dumpdir is defined %}
+{% if chrony_dumpdir is defined and chrony_dumpdir | length > 0 %}
 dumpdir {{ chrony_dumpdir }}
 {% endif %}
 {% for hw_interface in chrony_hwtimestamp_interfaces | d([]) %}
 hwtimestamp {{ hw_interface }}
 {% endfor %}
-{% if chrony_leapsectz is defined %}
+{% if chrony_leapsectz is defined and chrony_leapsectz | length > 0 %}
 leapsectz {{ chrony_leapsectz }}
 {% endif %}
 {% if chrony_makestep_secs is defined and chrony_makestep_nums is defined %}
 makestep {{ chrony_makestep_secs }} {{ chrony_makestep_nums }}
+{% endif %}
+{% if chrony_ntpsigndsocket is defined and chrony_ntpsigndsocket | length > 0 %}
+ntpsigndsocket {{ chrony_ntpsigndsocket }}
+{% endif %}
+{% if chrony_ratelimit is defined and chrony_ratelimit | length > 0 %}
+ratelimit {{ chrony_ratelimit }}
 {% endif %}
 {% if chrony_rtconutc | bool | d(False) %}
 rtconutc

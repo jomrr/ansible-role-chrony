@@ -3,17 +3,5 @@
 # file: tasks/main.yml
 
 - name: "Tasks for role ansible-role-chrony"
-  block:
-    - name: "Remove conflicting packages"
-      package:
-        name: "{{ chrony_remove_packages }}"
-        state: absent
-
-    - name: "Install packages for ansible-role-chrony"
-      package:
-        name: "{{ chrony_packages }}"
-        state: present
-
-    - name: "Import chrony client tasks"
-      import_tasks: client.yml
+  import_tasks: tasks.yml
   when: chrony_role_enabled | bool
