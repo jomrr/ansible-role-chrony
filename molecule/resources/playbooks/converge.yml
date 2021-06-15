@@ -7,5 +7,5 @@
   become: true
   vars:
     chrony_role_enabled: true
-  roles:  # to enable required roles put them in requirements.yml and add here
-    - role: '../ansible-role-chrony'
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
