@@ -31,10 +31,6 @@ Ansible 2.9 or higher.
 
 Variables and defaults for this role.
 
-### defaults/main/client.yml
-
-### Cient defaults
-
 ```yaml
 ---
 # role: ansible-role-chrony
@@ -46,9 +42,9 @@ chrony_role_enabled: false
 
 # List of allow/deny subnet directives. Order matters.
 # see: https://chrony.tuxfamily.org/doc/3.4/chrony.conf.html allow/deny.
-# This list is simply inserted as string in the conf file int the given order.
+# This list is simply inserted as string in the conf file in the given order.
 # EXAMPLE:
-# allow all overrides the preceeding deny rule, so be careful.
+# 'allow all' overrides the preceeding 'deny' rule, so be careful.
 # chrony_directives:
 #   - allow 1.2.3.4
 #   - deny 1.2.3
@@ -150,17 +146,14 @@ chrony_rtconutc: true
 chrony_rtcsync: true
 ```
 
-### Server defaults
-
-Not implemented yet.
-
 ## Dependencies
 
 None.
 
 ## Example Playbook
 
-This will configure a client to use the first four *.de.pool.ntp.org servers.
+This will configure a client to use the first four *.de.pool.ntp.org servers
+acting as ntp client without server functionality.
 
 ```yaml
 ---
