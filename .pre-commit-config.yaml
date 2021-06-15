@@ -1,0 +1,21 @@
+---
+# role: ansible-role-baseline
+# file: .pre-commit-config.yml
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-yaml
+        types: [yaml]
+        pass_filenames: true
+      - id: detect-private-key
+        pass_filenames: true
+      - id: end-of-file-fixer
+        pass_filenames: true
+      - id: trailing-whitespace
+        pass_filenames: true
+  - repo: https://github.com/ansible-community/ansible-lint
+    rev: v5.0.12
+    hooks:
+      - id: ansible-lint

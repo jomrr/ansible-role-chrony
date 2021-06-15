@@ -5,7 +5,7 @@
 dependency:
   name: galaxy
   options:
-    role-file: requirements.yml
+    requirements-file: molecule/tox/requirements.yml
 driver:
   name: docker
 lint: |
@@ -14,15 +14,10 @@ lint: |
   ansible-lint
 platforms:
   - name: chrony-${TOX_ENVNAME:-"default"}
-    image: ${MOLECULE_IMG:-"jam82/molecule-debian:11"}
-    command: ${MOLECULE_IMG_CMD:-""}
+    image: "${uns:-jam82}/molecule-${img:-debian}:${tag:-latest}"
+    command: ""
     pre_build_image: true
     privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 provisioner:
   name: ansible
   log: true
@@ -30,9 +25,5 @@ provisioner:
     prepare: ../resources/playbooks/prepare.yml
     converge: ../resources/playbooks/converge.yml
     verify: ../resources/playbooks/verify.yml
-  inventory:
-    group_vars:
-      all:
-        chrony_role_enabled: true
 verifier:
   name: ansible
