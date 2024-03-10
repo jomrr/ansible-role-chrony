@@ -1,9 +1,0 @@
----
-# role: ansible-role-chrony
-# file: molecule/tox/collections.yml
-
-collections:
-  - community.docker
-  - community.general
-
-roles: []

@@ -1,7 +1,38 @@
 ---
-# role: ansible-role-chrony
+# name: ansible-role-chrony
 # file: tasks/main.yml
 
-- name: "Tasks for role ansible-role-chrony"
-  import_tasks: tasks.yml
-  when: chrony_role_enabled | bool
+- name: "Remove conflicting packages"
+  ansible.builtin.package:
+    name: "{{ _chrony_remove_packages }}"
+    state: absent
+
+- name: "Install packages for ansible-role-chrony"
+  ansible.builtin.package:
+    name: "{{ _chrony_packages }}"
+    state: present
+
+- name: "Stop conflicting services"
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop: "{{ _chrony_mask_services }}"
+
+- name: "Mask conflicting services in systemd"
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    masked: true
+    state: stopped
+  loop: "{{ _chrony_mask_services }}"
+  when: ansible_service_mgr == 'systemd'
+
+- name: "Write {{ chrony_conf }}"
+  ansible.builtin.template:
+    src: "etc/chrony.conf.j2"
+    dest: "{{ _chrony_conf }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: enable and restart chronyd

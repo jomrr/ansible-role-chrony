@@ -1,42 +1,15 @@
 ---
-# role: ansible-role-chrony
+# name: jam82.chrony
 # file: meta/main.yml
 
 galaxy_info:
+  namespace: jam82
   role_name: chrony
-  author: jam82
-  description: Ansible role for setting up chrony.
-  company: ''
-
-  issue_tracker_url: https://github.com/jam82/ansible-role-chrony/issues
-
+  author: Jonas Mauer
+  company: none
+  description: Ansible role for setting up chrony and chronyd.
   license: MIT
-
-  min_ansible_version: "2.9"
-
-  platforms:
-    - name: Alpine
-      versions:
-        - any
-    - name: ArchLinux
-      versions:
-        - any
-    - name: EL
-      versions:
-        - any
-    - name: Debian
-      versions:
-        - any
-    - name: Fedora
-      versions:
-        - any
-    - name: opensuse
-      versions:
-        - any
-    - name: Ubuntu
-      versions:
-        - any
-
-  galaxy_tags: []
-
-dependencies: []
+  issue_tracker_url: https://github.com/jam82/ansible-role-chrony/issues
+  min_ansible_version: "2.15"
+  galaxy_tags:
+    - chrony

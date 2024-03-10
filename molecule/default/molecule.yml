@@ -1,73 +1,35 @@
 ---
-# role: ansible-role-chrony
+# name: jam82.ansible-role-chrony
 # file: molecule/default/molecule.yml
 
 dependency:
   name: galaxy
-  options:
-    requirements-file: requirements.yml
+  requirements-file: meta/requirements.yml
+  role-file: meta/requirements.yml
 driver:
-  name: docker
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
+  name: podman
+lint: set -e; ansible-lint
 platforms:
-  - name: almalinux-chrony
-    image: "jam82/molecule-almalinux:latest"
-    command: ""
+  - command: null
+    entrypoint: null
+    image: docker.io/${uns:-jam82}/molecule-${img:-fedora}:${tag:-latest}
+    name: chrony
     pre_build_image: true
-    privileged: true
-  - name: alpine-chrony
-    image: "jam82/molecule-alpine:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: arch-chrony
-    image: "jam82/molecule-archlinux:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: centos-chrony
-    image: "jam82/molecule-centos:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: debian-chrony
-    image: "jam82/molecule-debian:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: fedora-chrony
-    image: "jam82/molecule-fedora:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: opensuse-chrony
-    image: "jam82/molecule-opensuse:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: tumbleweed-chrony
-    image: "jam82/molecule-opensuse:tumbleweed"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: oraclelinux-chrony
-    image: "jam82/molecule-oraclelinux:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
-  - name: ubuntu-chrony
-    image: "jam82/molecule-ubuntu:latest"
-    command: ""
-    pre_build_image: true
-    privileged: true
 provisioner:
-  name: ansible
+  config_options:
+    defaults:
+      callback_whitelist: profile_tasks
+      interpreter_python: auto_silent
+      timer: null
+      yaml: null
+    ssh_connection:
+      pipelining: true
   log: true
+  name: ansible
   playbooks:
     converge: ../resources/playbooks/converge.yml
     verify: ../resources/playbooks/verify.yml
+scenario:
+  name: default
 verifier:
   name: ansible

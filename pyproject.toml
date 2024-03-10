@@ -1,0 +1,20 @@
+[project]
+name = "chrony"
+version = "0.0.0"
+description = "Ansible role for setting up chrony and chronyd."
+authors = ["Jonas Mauer"]
+license = "MIT"
+keywords = ["chrony"]
+repository = "https://github.com/jam82/ansible-role-chrony"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+
+[tool.semantic_release]
+commit_message = "build(release): version {version}"
+major_on_zero = false
+upload_to_pypi = false
+upload_to_vcs_release = true
+version_toml = [
+    "pyproject.toml:project.version",
+]
