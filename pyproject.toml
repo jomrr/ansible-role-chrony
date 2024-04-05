@@ -5,7 +5,7 @@ description = "Ansible role for setting up chrony and chronyd."
 authors = ["Jonas Mauer"]
 license = "MIT"
 keywords = ["chrony"]
-repository = "https://github.com/jam82/ansible-role-chrony"
+repository = "https://github.com/jomrr/ansible-role-chrony"
 
 [tool.commitizen]
 name = "cz_conventional_commits"

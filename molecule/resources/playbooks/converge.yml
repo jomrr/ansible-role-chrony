@@ -1,5 +1,5 @@
 ---
-# name: jam82.ansible-role-chrony
+# name: jomrr.ansible-role-chrony
 # file: molecule/resources/playbooks/converge.yml
 
 - name: "PLAYBOOK | Converge"

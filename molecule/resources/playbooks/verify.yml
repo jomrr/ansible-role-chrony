@@ -1,5 +1,5 @@
 ---
-# name: jam82.ansible-role-chrony
+# name: jomrr.ansible-role-chrony
 # file: molecule/resources/playbooks/verify.yml
 
 - name: "PLAYBOOK | Verify"
