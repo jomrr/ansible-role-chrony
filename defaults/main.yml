@@ -79,7 +79,7 @@ chrony_ntp_pools:
 
 # List of NTP Servers with option list.
 chrony_ntp_servers: []
-# following options are only for LAN, a public ntp could block your
+# following options are only for LAN, a public ntp could block you
 # for sending too many requests.
 #  - address: 192.168.1.1
 #    options:
