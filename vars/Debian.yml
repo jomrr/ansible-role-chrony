@@ -11,4 +11,7 @@ __chronyd_conf: /etc/chrony/chrony.conf
 __chronyd_service: chrony
 __chronyd_conflicting_services:
   - systemd-timesyncd
-__chronyd_validate: /usr/sbin/chronyd -p -f %s
+# Pipe the candidate to avoid AppArmor denying Ansible's temporary path.
+__chronyd_validate: >-
+  /bin/bash -o pipefail -c
+  'cat "$1" | /usr/sbin/chronyd -p -f /dev/stdin' -- %s

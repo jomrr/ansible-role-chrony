@@ -10,4 +10,7 @@ __chronyd_remove_packages:
 __chronyd_conf: /etc/chrony/chrony.conf
 __chronyd_service: chronyd
 __chronyd_conflicting_services: []
-__chronyd_validate: /usr/sbin/chronyd -p -f %s
+# Pipe the candidate to avoid AppArmor denying Ansible's temporary path.
+__chronyd_validate: >-
+  /bin/sh -o pipefail -c
+  'cat "$1" | /usr/sbin/chronyd -p -f /dev/stdin' -- %s
