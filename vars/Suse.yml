@@ -1,0 +1,14 @@
+---
+# role: chronyd
+# file: vars/Suse.yml
+
+__chronyd_packages:
+  - chrony
+  - timezone
+__chronyd_remove_packages:
+  - ntp
+__chronyd_conf: /etc/chrony.conf
+__chronyd_service: chronyd
+__chronyd_conflicting_services:
+  - systemd-timesyncd
+__chronyd_validate: /usr/sbin/chronyd -p -f %s

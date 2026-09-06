@@ -1,0 +1,13 @@
+---
+# role: chronyd
+# file: vars/RedHat.yml
+
+__chronyd_packages:
+  - chrony
+  - tzdata
+__chronyd_remove_packages:
+  - ntp
+__chronyd_conf: /etc/chrony.conf
+__chronyd_service: chronyd
+__chronyd_conflicting_services: []
+__chronyd_validate: /usr/sbin/chronyd -p -f %s

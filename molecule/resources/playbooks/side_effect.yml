@@ -1,0 +1,71 @@
+---
+# role: chronyd
+# file: molecule/resources/playbooks/side_effect.yml
+
+- name: "CHRONYD | Exercise server changes and service recovery"
+  hosts: all
+  gather_facts: true
+  vars:
+    chronyd_port: 1123
+    chronyd_bindaddress: "127.0.0.1"
+    chronyd_directives:
+      - allow 127.0.0.0/8
+      - local stratum 10
+    chronyd_deny:
+      - 127.0.0.2
+  tasks:
+    - name: "CHRONYD | Switch the running client to server mode"
+      ansible.builtin.include_role:
+        name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+        public: true
+
+    - name: "CHRONYD | Query effective server access rules"
+      ansible.builtin.command:
+        argv:
+          - chronyc
+          - -m
+          - accheck 127.0.0.1
+          - accheck 127.0.0.2
+      changed_when: false
+      register: __chronyd_access
+
+    - name: "CHRONYD | Assert allowed and denied clients are distinguished"
+      ansible.builtin.assert:
+        that:
+          - "'208 Access allowed' in __chronyd_access.stdout"
+          - "'209 Access denied' in __chronyd_access.stdout"
+        quiet: true
+
+    - name: "CHRONYD | Verify NTP response and restricted IPv4 binding"
+      ansible.builtin.command:
+        argv:
+          - python3
+          - -c
+          - |
+            import socket
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+                probe.settimeout(5)
+                probe.sendto(bytes([35]) + bytes(47), ("127.0.0.1", 1123))
+                reply, _ = probe.recvfrom(512)
+                assert len(reply) >= 48 and reply[0] & 7 == 4, reply
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+                probe.bind(("127.0.0.2", 1123))
+      changed_when: false
+
+    - name: "CHRONYD | Stop and disable the configured service"
+      ansible.builtin.service:
+        name: "{{ __chronyd_service }}"
+        state: stopped
+        enabled: false
+
+    - name: "CHRONYD | Restore the service with unchanged configuration"
+      ansible.builtin.include_role:
+        name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+
+    - name: "CHRONYD | Verify the restored daemon responds"
+      ansible.builtin.command: chronyc tracking
+      changed_when: false
+
+    - name: "CHRONYD | Verify the restored service is enabled"
+      ansible.builtin.command: "systemctl is-enabled {{ __chronyd_service }}"
+      changed_when: false

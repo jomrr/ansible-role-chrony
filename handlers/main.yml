@@ -1,9 +1,9 @@
 ---
-# name: ansible-role-chrony
+# role: chronyd
 # file: handlers/main.yml
 
-- name: Enable and restart chronyd
+- name: "CHRONYD | Restart service"
   ansible.builtin.service:
-    name: "{{ _chrony_daemon }}"
-    enabled: true
+    name: "{{ __chronyd_service }}"
     state: restarted
+  listen: restart daemon

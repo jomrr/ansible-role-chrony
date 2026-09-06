@@ -1,42 +1,42 @@
 ---
-# name: jomrr.ansible-role-chrony
+# role: chronyd
 # file: molecule/resources/playbooks/prepare.yml
 
-- name: "PLAYBOOK | Prepare"
+- name: "CHRONYD | Prepare containers without changing the host clock"
   hosts: all
-  become: true
   gather_facts: true
   tasks:
-    - name: "Update apk cache and installed packages"
-      community.general.apk:
-        available: true
-        update_cache: true
-        upgrade: true
-      when: ansible_pkg_mgr == "apk"
+    - name: "CHRONYD | Load platform service paths"
+      ansible.builtin.include_vars: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/vars/{{ ansible_facts.os_family }}.yml"
 
-    - name: "Update apt cache and installed packages"  # noqa: package-latest
+    - name: "CHRONYD | Refresh Debian package metadata"
       ansible.builtin.apt:
-        force_apt_get: true
-        state: latest
         update_cache: true
-      when: ansible_pkg_mgr == "apt"
+      when: ansible_facts.pkg_mgr == 'apt'
 
-    - name: "Update dnf cache and installed packages"  # noqa: package-latest
-      ansible.builtin.dnf:
-        name: "*"
-        state: latest
-        update_cache: true
-      when: ansible_pkg_mgr == "dnf"
+    - name: "CHRONYD | Create test service override directory"
+      ansible.builtin.file:
+        path: "/etc/systemd/system/{{ __chronyd_service }}.service.d"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
 
-    - name: "Update pacman cache and installed packages"
-      community.general.pacman:
-        update_cache: true
-        upgrade: true
-      when: ansible_pkg_mgr == "pacman"
+    - name: "CHRONYD | Run the test daemon without clock control"
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/{{ __chronyd_service }}.service.d/molecule.conf"
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          [Unit]
+          ConditionCapability=
+          ConditionVirtualization=
+          [Service]
+          Type=simple
+          ExecStart=
+          ExecStart=!/usr/sbin/chronyd -n -x -f {{ __chronyd_conf }}
 
-    - name: "Update zypper cache and installed packages"  # noqa: package-latest
-      community.general.zypper:
-        name: "*"
-        state: latest
-        update_cache: true
-      when: ansible_pkg_mgr == "zypper"
+    - name: "CHRONYD | Load test service overrides"
+      ansible.builtin.systemd_service:
+        daemon_reload: true
