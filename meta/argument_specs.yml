@@ -1,0 +1,144 @@
+---
+# role: chronyd
+# file: meta/argument_specs.yml
+
+argument_specs:
+  main:
+    short_description: Install, configure, enable, and start chronyd.
+    options:
+      chronyd_directives:
+        type: list
+        default: []
+        description:
+          - Ordered access directives; explicit deny entries below are applied afterwards.
+        elements: str
+      chronyd_port:
+        type: int
+        default: 0
+        description:
+          - NTP server port; zero disables serving NTP requests.
+      chronyd_bindaddress:
+        type: str
+        default: ''
+        description:
+          - Local address for NTP requests; an empty string uses the daemon default.
+      chronyd_bindcmdaddress:
+        type: str
+        default: 127.0.0.1
+        description:
+          - Local address for the optional chronyc UDP command socket.
+      chronyd_cmdport:
+        type: int
+        default: 0
+        description:
+          - Command port; zero restricts chronyc access to the local Unix socket.
+      chronyd_deny:
+        type: list
+        default: []
+        description:
+          - Subnets denied NTP access after processing the ordered directives.
+        elements: str
+      chronyd_driftfile:
+        type: str
+        default: /var/lib/chrony/chrony.drift
+        description:
+          - Drift file path; an empty string disables saving the estimated clock drift.
+      chronyd_dumponexit:
+        type: bool
+        default: true
+        description:
+          - Save measurement histories when the daemon exits.
+      chronyd_dumpdir:
+        type: str
+        default: /var/lib/chrony
+        description:
+          - Measurement history directory; an empty string omits the dumpdir directive.
+      chronyd_hwtimestamp_interfaces:
+        type: list
+        default: []
+        description:
+          - Network interfaces supporting hardware timestamping.
+        elements: str
+      chronyd_leapsectz:
+        type: str
+        default: right/UTC
+        description:
+          - Timezone containing leap-second information; an empty string omits the directive.
+      chronyd_makestep_secs:
+        type: float
+        default: 1.0
+        description:
+          - Clock offset threshold in seconds above which an initial update may step time.
+      chronyd_makestep_nums:
+        type: int
+        default: 3
+        description:
+          - Number of initial updates allowed to step time; negative values remove the limit.
+      chronyd_ntp_pools:
+        type: list
+        default:
+          - address: 0.de.pool.ntp.org
+            options:
+              - iburst
+          - address: 1.de.pool.ntp.org
+            options:
+              - iburst
+          - address: 2.de.pool.ntp.org
+            options:
+              - iburst
+          - address: 3.de.pool.ntp.org
+            options:
+              - iburst
+        description:
+          - NTP pools with a required address and list of chrony source options.
+        elements: dict
+        options:
+          address:
+            type: str
+            required: true
+            description:
+              - NTP source hostname or IP address.
+          options:
+            type: list
+            elements: str
+            required: true
+            description:
+              - Chrony source options; an empty list is valid.
+      chronyd_ntp_servers:
+        type: list
+        default: []
+        description:
+          - Individual NTP servers with a required address and list of source options.
+        elements: dict
+        options:
+          address:
+            type: str
+            required: true
+            description:
+              - NTP source hostname or IP address.
+          options:
+            type: list
+            elements: str
+            required: true
+            description:
+              - Chrony source options; an empty list is valid.
+      chronyd_ntpsigndsocket:
+        type: str
+        default: ''
+        description:
+          - Samba NTP signing socket directory; an empty string disables integration.
+      chronyd_ratelimit:
+        type: str
+        default: ''
+        description:
+          - NTP response rate-limit options; an empty string omits the directive.
+      chronyd_rtconutc:
+        type: bool
+        default: true
+        description:
+          - Interpret the hardware real-time clock as UTC.
+      chronyd_rtcsync:
+        type: bool
+        default: true
+        description:
+          - Enable periodic kernel synchronization of the hardware real-time clock.

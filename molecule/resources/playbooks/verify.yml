@@ -1,12 +1,36 @@
 ---
-# name: jomrr.ansible-role-chrony
+# role: chronyd
 # file: molecule/resources/playbooks/verify.yml
 
-- name: "PLAYBOOK | Verify"
+- name: "CHRONYD | Verify client behavior"
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
-    - name: "Assert true"
+    - name: "CHRONYD | Load platform service paths"
+      ansible.builtin.include_vars: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/vars/{{ ansible_facts.os_family }}.yml"
+
+    - name: "CHRONYD | Query configured runtime sources"
+      ansible.builtin.command: chronyc -n -c sources
+      changed_when: false
+      register: __chronyd_sources
+
+    - name: "CHRONYD | Assert the configured NTP source is active in the daemon"
       ansible.builtin.assert:
-        that: "true"
-        fail_msg: "This should never fail"
+        that:
+          - "'192.0.2.123' in __chronyd_sources.stdout"
+        quiet: true
+
+    - name: "CHRONYD | Verify service enablement"
+      ansible.builtin.command: "systemctl is-enabled {{ __chronyd_service }}"
+      changed_when: false
+
+    - name: "CHRONYD | Verify client mode leaves the NTP server port unused"
+      ansible.builtin.command:
+        argv:
+          - python3
+          - -c
+          - |
+            import socket
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+                probe.bind(("127.0.0.1", 123))
+      changed_when: false

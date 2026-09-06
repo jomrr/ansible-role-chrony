@@ -1,61 +1,50 @@
-# {{ template_destpath }}
-# vim: set noai sw=4 tw=4 ts=4 et:
-# managed by ansible role: jomrr.chrony
+# Managed by ansible.
+# file: {{ template_destpath }}
 
-# general settings
-{% if chrony_port is defined %}
-port {{ chrony_port }}
+port {{ chronyd_port }}
+cmdport {{ chronyd_cmdport }}
+bindcmdaddress {{ chronyd_bindcmdaddress }}
+{% if chronyd_bindaddress | length > 0 %}
+bindaddress {{ chronyd_bindaddress }}
 {% endif %}
-{% if chrony_cmdport is defined %}
-cmdport {{ chrony_cmdport }}
-{% endif %}
-{% if chrony_bindcmdaddress is defined %}
-bindcmdaddress {{ chrony_bindcmdaddress }}
-{% endif %}
-{% for directive in chrony_directives %}
-{{ directive }}
+{% for __chronyd_directive in chronyd_directives %}
+{{ __chronyd_directive }}
 {% endfor %}
-{% if chrony_driftfile is defined and chrony_driftfile | length > 0 %}
-driftfile {{ chrony_driftfile }}
+{% for __chronyd_subnet in chronyd_deny %}
+deny {{ __chronyd_subnet }}
+{% endfor %}
+{% if chronyd_driftfile | length > 0 %}
+driftfile {{ chronyd_driftfile }}
 {% endif %}
-{% if chrony_dumponexit | bool %}
+{% if chronyd_dumponexit | bool %}
 dumponexit
 {% endif %}
-{% if chrony_dumpdir is defined and chrony_dumpdir | length > 0 %}
-dumpdir {{ chrony_dumpdir }}
+{% if chronyd_dumpdir | length > 0 %}
+dumpdir {{ chronyd_dumpdir }}
 {% endif %}
-{% for hw_interface in chrony_hwtimestamp_interfaces | default([]) %}
-hwtimestamp {{ hw_interface }}
+{% for __chronyd_interface in chronyd_hwtimestamp_interfaces %}
+hwtimestamp {{ __chronyd_interface }}
 {% endfor %}
-{% if chrony_leapsectz is defined and chrony_leapsectz | length > 0 %}
-leapsectz {{ chrony_leapsectz }}
+{% if chronyd_leapsectz | length > 0 %}
+leapsectz {{ chronyd_leapsectz }}
 {% endif %}
-{% if chrony_makestep_secs is defined and chrony_makestep_nums is defined %}
-makestep {{ chrony_makestep_secs }} {{ chrony_makestep_nums }}
+makestep {{ chronyd_makestep_secs }} {{ chronyd_makestep_nums }}
+{% if chronyd_ntpsigndsocket | length > 0 %}
+ntpsigndsocket {{ chronyd_ntpsigndsocket }}
 {% endif %}
-{% if chrony_ntpsigndsocket is defined and chrony_ntpsigndsocket | length > 0 %}
-ntpsigndsocket {{ chrony_ntpsigndsocket }}
+{% if chronyd_ratelimit | length > 0 %}
+ratelimit {{ chronyd_ratelimit }}
 {% endif %}
-{% if chrony_ratelimit is defined and chrony_ratelimit | length > 0 %}
-ratelimit {{ chrony_ratelimit }}
-{% endif %}
-{% if chrony_rtconutc | bool | default(False) %}
+{% if chronyd_rtconutc | bool %}
 rtconutc
 {% endif %}
-{% if chrony_rtcsync | bool | default(False) %}
+{% if chronyd_rtcsync | bool %}
 rtcsync
 {% endif %}
-{% if chrony_ntp_pools is defined %}
 
-# list of ntp servers and options
-{% for ntp_pool in chrony_ntp_pools | default([]) %}
-pool {{ ntp_pool.address }} {{ ntp_pool.options | join(' ') }}
+{% for __chronyd_pool in chronyd_ntp_pools %}
+pool {{ __chronyd_pool.address }} {{ __chronyd_pool.options | join(' ') }}
 {% endfor %}
-{% endif %}
-{% if chrony_ntp_servers is defined %}
-
-# list of ntp servers and options
-{% for ntp_server in chrony_ntp_servers | default([]) %}
-server {{ ntp_server.address }} {{ ntp_server.options | join(' ') }}
+{% for __chronyd_server in chronyd_ntp_servers %}
+server {{ __chronyd_server.address }} {{ __chronyd_server.options | join(' ') }}
 {% endfor %}
-{% endif %}

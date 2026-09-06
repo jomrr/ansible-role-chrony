@@ -1,38 +1,66 @@
 ---
-# name: ansible-role-chrony
+# role: chronyd
 # file: tasks/main.yml
 
-- name: "Remove conflicting packages"
+- name: "CHRONYD | Load platform variables"
+  ansible.builtin.include_vars: "{{ role_path }}/vars/{{ ansible_facts.os_family }}.yml"
+
+- name: "CHRONYD | Remove conflicting packages"
   ansible.builtin.package:
-    name: "{{ _chrony_remove_packages }}"
+    name: "{{ __chronyd_remove_packages }}"
     state: absent
 
-- name: "Install packages for ansible-role-chrony"
+- name: "CHRONYD | Install packages"
   ansible.builtin.package:
-    name: "{{ _chrony_packages }}"
+    name: "{{ __chronyd_packages }}"
     state: present
 
-- name: "Stop conflicting services"
+- name: "CHRONYD | Discover installed conflicting services"
+  ansible.builtin.service_facts:
+  when:
+    - ansible_facts.service_mgr == 'systemd'
+    - __chronyd_conflicting_services | length > 0
+
+- name: "CHRONYD | Stop installed conflicting services"
   ansible.builtin.service:
-    name: "{{ item }}"
+    name: "{{ __chronyd_conflicting_service }}"
     enabled: false
     state: stopped
-  loop: "{{ _chrony_mask_services }}"
+  loop: "{{ __chronyd_conflicting_services }}"
+  loop_control:
+    loop_var: __chronyd_conflicting_service
+    label: "{{ __chronyd_conflicting_service }}"
+  when:
+    - ansible_facts.service_mgr == 'systemd'
+    - (__chronyd_conflicting_service ~ '.service') in ansible_facts.services
+    - ansible_facts.services[__chronyd_conflicting_service ~ '.service'].status != 'not-found'
 
-- name: "Mask conflicting services in systemd"
-  ansible.builtin.systemd:
-    name: "{{ item }}"
-    enabled: false
+- name: "CHRONYD | Mask conflicting systemd services"
+  ansible.builtin.systemd_service:
+    name: "{{ __chronyd_conflicting_service }}"
     masked: true
-    state: stopped
-  loop: "{{ _chrony_mask_services }}"
-  when: ansible_service_mgr == 'systemd'
+  loop: "{{ __chronyd_conflicting_services }}"
+  loop_control:
+    loop_var: __chronyd_conflicting_service
+    label: "{{ __chronyd_conflicting_service }}"
+  when: ansible_facts.service_mgr == 'systemd'
 
-- name: "Write {{ chrony_conf }}"
+- name: "CHRONYD | Write configuration"
   ansible.builtin.template:
-    src: "etc/chrony.conf.j2"
-    dest: "{{ _chrony_conf }}"
+    src: etc/chrony.conf.j2
+    dest: "{{ __chronyd_conf }}"
     owner: root
     group: root
     mode: "0644"
-  notify: enable and restart chronyd
+    backup: true
+    validate: "{{ __chronyd_validate }}"
+  notify: restart daemon
+
+- name: "CHRONYD | Enable and start service"
+  ansible.builtin.service:
+    name: "{{ __chronyd_service }}"
+    enabled: true
+    state: started
+
+- name: "CHRONYD | Apply configuration changes"
+  ansible.builtin.meta: flush_handlers
